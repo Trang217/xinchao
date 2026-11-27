@@ -3,10 +3,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Eye, EyeOff } from "lucide-react";
-import { useState } from "react";
+import { useActionState, useState } from "react";
+import { registerAction } from "@/actions/auth";
 
 export function RegisterForm() {
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [state, formAction, isPending] = useActionState(registerAction, {
+    error: "",
+  });
 
   return (
     <main className="auth-page">
@@ -45,7 +49,9 @@ export function RegisterForm() {
               <br />
               better together.
             </p>
-            <span className="auth-art-caption">Pull up a chair at XinChao.</span>
+            <span className="auth-art-caption">
+              Pull up a chair at XinChao.
+            </span>
           </div>
           <span className="auth-art-flower" aria-hidden="true">
             ✳
@@ -55,15 +61,14 @@ export function RegisterForm() {
         <section className="auth-panel auth-panel-register">
           <div className="auth-form-wrap">
             <p className="auth-eyebrow">
-              <span className="eyebrow-line" />
-              A seat at our table
+              <span className="eyebrow-line" />A seat at our table
             </p>
             <h1 className="auth-title">Let’s get acquainted.</h1>
             <p className="auth-intro">
               Create your account and make yourself at home.
             </p>
 
-            <form className="auth-form auth-form-register">
+            <form action={formAction} className="auth-form auth-form-register">
               <div className="auth-field">
                 <label htmlFor="register-name">Your name</label>
                 <input
@@ -99,7 +104,9 @@ export function RegisterForm() {
                   <button
                     className="password-toggle"
                     type="button"
-                    aria-label={passwordVisible ? "Hide password" : "Show password"}
+                    aria-label={
+                      passwordVisible ? "Hide password" : "Show password"
+                    }
                     onClick={() => setPasswordVisible((visible) => !visible)}
                   >
                     {passwordVisible ? (
@@ -126,14 +133,14 @@ export function RegisterForm() {
                 <label htmlFor="register-phone">Phone number</label>
                 <input
                   id="register-phone"
-                  name="phone"
+                  name="phoneNumber"
                   type="tel"
                   autoComplete="tel"
                   placeholder="Your phone number"
                 />
               </div>
 
-              <button className="auth-submit" type="button">
+              <button className="auth-submit" type="submit">
                 Create account <ArrowRight size={17} aria-hidden="true" />
               </button>
             </form>

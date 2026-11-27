@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ShoppingBag, UserRound } from "lucide-react";
+import { cookies } from "next/headers";
 
 const navigation = [
   { label: "Home", href: "/" },
@@ -8,7 +9,10 @@ const navigation = [
   { label: "Contact", href: "/#contact" },
 ];
 
-export function Header() {
+export async function Header() {
+  const cookie = await cookies();
+  const token = cookie.get("auth_token")?.value;
+
   return (
     <header className="main-header">
       <div className="header-inner">
@@ -31,10 +35,18 @@ export function Header() {
         </nav>
 
         <div className="header-actions">
-          <Link className="login-link" href="/login">
-            <UserRound size={17} strokeWidth={1.8} aria-hidden="true" />
-            <span>Login</span>
-          </Link>
+          {token ? (
+            <Link className="login-link" href="/login">
+              <UserRound size={17} strokeWidth={1.8} aria-hidden="true" />
+              <span>My profile</span>
+            </Link>
+          ) : (
+            <Link className="login-link" href="/profile">
+              <UserRound size={17} strokeWidth={1.8} aria-hidden="true" />
+              <span>Login</span>
+            </Link>
+          )}
+
           <Link className="cart-link" href="/menu" aria-label="View your cart">
             <ShoppingBag size={17} strokeWidth={1.8} aria-hidden="true" />
             <span>Cart</span>

@@ -3,10 +3,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Eye, EyeOff } from "lucide-react";
-import { useState } from "react";
+import { useState, useActionState } from "react";
+import { loginAction } from "../../actions/auth";
 
 export function LoginForm() {
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [state, formAction, isPending] = useActionState(loginAction, {
+    error: "",
+  });
 
   return (
     <main className="auth-page">
@@ -62,7 +66,7 @@ export function LoginForm() {
               Sign in to pick up right where the good stuff begins.
             </p>
 
-            <form className="auth-form">
+            <form action={formAction} className="auth-form">
               <div className="auth-field">
                 <label htmlFor="login-email">Email address</label>
                 <input
@@ -87,7 +91,9 @@ export function LoginForm() {
                   <button
                     className="password-toggle"
                     type="button"
-                    aria-label={passwordVisible ? "Hide password" : "Show password"}
+                    aria-label={
+                      passwordVisible ? "Hide password" : "Show password"
+                    }
                     onClick={() => setPasswordVisible((visible) => !visible)}
                   >
                     {passwordVisible ? (
@@ -96,11 +102,17 @@ export function LoginForm() {
                       <Eye size={18} aria-hidden="true" />
                     )}
                   </button>
+                  <div>
+                    {state.error && (
+                      <p className="text-red-500">{state.error}</p>
+                    )}
+                  </div>
                 </div>
               </div>
 
-              <button className="auth-submit" type="button">
-                Login <ArrowRight size={17} aria-hidden="true" />
+              <button className="auth-submit" type="submit">
+                {isPending ? "Logging..." : "Login"}
+                <ArrowRight size={17} aria-hidden="true" />
               </button>
             </form>
 
